@@ -19,7 +19,6 @@ func main() {
 
     flag.Parse()
     arg1 := flag.Arg(0)
-    //arg2 := flag.Arg(1)
 
     if _, err := os.Stat(*dbpath); os.IsNotExist(err) {
         fmt.Println(fmt.Sprintf("Database not found: %s", *dbpath))
@@ -47,8 +46,8 @@ func deleteData(bucketname string, arg1 string) {
             return nil
         }
         v := b.Delete([]byte(arg1))
-        if v != nil {
-            fmt.Println(fmt.Sprintf("key: %s was deleted.", arg1, v))
+        if v == nil {
+            fmt.Println(fmt.Sprintf("key: %s was deleted.", arg1))
             return nil
         } else {
             fmt.Println(fmt.Sprintf("key:%s does not exist.", arg1))
