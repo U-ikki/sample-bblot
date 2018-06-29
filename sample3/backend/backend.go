@@ -46,18 +46,35 @@ func CreateBucket(db *bolt.DB) (error){
     return nil
 }
 
-
-func PutCollection(db *bolt.DB, key string, interface{}) (error) {
+// PutCollection レコード登録
+func PutCollection(db *bolt.DB, key string, value string) (error) {
     tx, err := db.Begin(true)
     if err != nil {
         return err
     }
 
+    b := tx.Bucket([]byte(bucketname))
+
+    if err := b.Put([]byte(key), []byte(value)); err != nil {
+        return err
+    }
+
+    _ = tx.Commit()
+
+    return nil
+}
+
+// GetCollection レコード取得
+func GetCollection(db *bolt.DB, key string)  *string {
+    tx, err := db.Begin(false)
+    if err != nil {
+        return nil
+    }
+
     defer tx.Rollback()
 
     b := tx.Bucket([]byte(bucketname))
-    err := b.Put([]byte(key), []byte("42"))
-
-
+    value := b.Get([]byte(key))
+    v := string(value)
+    return &v
 }
-
