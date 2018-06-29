@@ -2,7 +2,7 @@ package handler
 
 import (
     "net/http"
-    //"encoding/json"
+    "encoding/json"
 
     "sample-bblot/sample3/backend"
 
@@ -47,16 +47,20 @@ func PutCollectionService(db *bolt.DB) echo.HandlerFunc {
             return err
         }
 
-        return c.JSON(http.StatusOK, p)
-
-        /*
+        // 構造体をJSONに変換
         m, err := json.Marshal(p)
         if err != nil {
             return err
         }
 
+        // JSONをstringに変換し、bboltで登録する
         jsonString := string(m)
-        return c.JSON(http.StatusOK, jsonString)
-        */
+        collectionKey := c.Param("key")
+        if err := backend.PutCollection(db, collectionKey, jsonString); err != nil {
+            return err
+        }
+
+        return c.String(http.StatusOK, jsonString)
+
     }
 }
